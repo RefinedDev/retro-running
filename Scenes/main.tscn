@@ -1,0 +1,53 @@
+[gd_scene load_steps=7 format=3 uid="uid://d3dnbwxdfwdvi"]
+
+[ext_resource type="PackedScene" uid="uid://cum8gm8q4w2vx" path="res://Scenes/player.tscn" id="1_noseg"]
+[ext_resource type="PackedScene" uid="uid://da7w1tnoc67jq" path="res://Scenes/floor.tscn" id="2_4cofi"]
+[ext_resource type="PackedScene" uid="uid://bbxi1i3wb144p" path="res://Scenes/ui.tscn" id="3_iab1f"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_nf3ln"]
+
+[sub_resource type="Sky" id="Sky_4vik3"]
+sky_material = SubResource("ProceduralSkyMaterial_nf3ln")
+
+[sub_resource type="Environment" id="Environment_s8deq"]
+background_mode = 2
+sky = SubResource("Sky_4vik3")
+tonemap_mode = 2
+glow_enabled = true
+
+[node name="Main" type="Main"]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866024, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.75, -0.43301, 0, 5, 0)
+shadow_enabled = true
+shadow_blur = 3.121
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_s8deq")
+
+[node name="Player" parent="." instance=ExtResource("1_noseg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 32)
+
+[node name="CameraPivot" type="Marker3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 0.951057, 0.309017, 0, -0.309017, 0.951057, 0, -2, -10)
+
+[node name="Camera3D" type="Camera3D" parent="Player/CameraPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, -2.98023e-08, 0, 0, 1, 0, 4.76837e-07, 19)
+size = 25.0
+
+[node name="Spawn_floor" type="Timer" parent="."]
+wait_time = 1.5
+autostart = true
+
+[node name="Floor" parent="." instance=ExtResource("2_4cofi")]
+
+[node name="UI" parent="." instance=ExtResource("3_iab1f")]
+offset_right = 125.0
+offset_bottom = 69.0
+
+[node name="Increment_score" type="Timer" parent="."]
+wait_time = 0.25
+autostart = true
+
+[connection signal="timeout" from="Spawn_floor" to="." method="spawnfloor_timeout"]
+[connection signal="timeout" from="Increment_score" to="." method="increase_score"]

@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://bbxi1i3wb144p"]
+
+[node name="UI" type="UI"]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Score" type="Label" parent="."]
+layout_mode = 0
+offset_right = 130.0
+offset_bottom = 72.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 50
+text = "0
+"
+horizontal_alignment = 1
+vertical_alignment = 1
