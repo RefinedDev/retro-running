@@ -17,40 +17,7 @@ pub struct Player {
 }
 
 impl Player {
-    // pub fn get_platform_standing_on(&mut self) -> Option<Gd<Node>> {
-    //     let collisions_no = self.base.get_slide_collision_count();
-    //     if collisions_no > 0 {
-    //         for i in 0..=collisions_no {
-    //             let collision = self.base.get_slide_collision(i);
-
-    //             if let Some(collision_obj) = collision {
-    //                 if let Some(object) = collision_obj.get_collider() {
-    //                     let collider = object.cast::<Node>();
-
-    //                     if collider.is_in_group("floor".into()) {
-    //                         return Some(collider);
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     }
-    //     return None;
-    // }
-
     pub fn change_direction(&mut self, direction: &str) {
-        // let platform = self.get_platform_standing_on();
-        // if let Some(platform) = platform {
-        //     let platform = platform.get_node_as::<MeshInstance3D>(direction);
-
-        //     let x = platform.get_position().x;
-        //     let y = self.base.get_position().y;
-        //     let z = self.base.get_position().z;
-
-        //     let current_pos = self.base.get_position();
-        //     self.base.set_position(Vector3::lerp(current_pos, Vector3::new(x,y,z), 0.3));
-        // }
-
-        // ALT: hardcoding positions, the advantage here is you can change position IN AIR unlike the code above
         let center = Vector3::new(0.0, 0.0, 0.0);
         let right = Vector3::new(4.437, 0.0, 0.0);
         let left = Vector3::new(-4.432, 0.0, 0.0);
@@ -104,7 +71,7 @@ impl CharacterBody3DVirtual for Player {
             if self.base.is_on_floor() {
                 // IMPL ROLL
             } else {
-                self.gravity += 500.0
+                self.gravity += 200.0
             }
         }
 
@@ -113,7 +80,7 @@ impl CharacterBody3DVirtual for Player {
             self.platform_standing = match self.platform_standing {
                 'C' => 'L',
                 'R' => 'C',
-                _ => 'L'
+                _ => 'L',
             };
         }
 
@@ -121,7 +88,7 @@ impl CharacterBody3DVirtual for Player {
             self.platform_standing = match self.platform_standing {
                 'C' => 'R',
                 'L' => 'C',
-                _ => 'R'
+                _ => 'R',
             };
         }
 

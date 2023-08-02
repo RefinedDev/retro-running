@@ -8,14 +8,14 @@ use godot::{
 
 #[derive(GodotClass)]
 #[class(base=Node)]
-struct Main {
+pub struct Main {
     score: i32,
     player_intensity: i8, // how fast the player is running
 
     floor_scene: Gd<PackedScene>,
     floor_count: f32,
     floor_to_lerp: Option<Gd<StaticBody3D>>,
-
+    
     #[base]
     base: Base<Node>,
 }
@@ -34,13 +34,13 @@ impl Main {
 
     #[func]
     fn increase_score(&mut self) {
-        let scores_required_to_increase_game_speed: [i32; 8] =
-            [100, 200, 300, 400, 500, 600, 700, 850];
-        // player's speed increased when they hit this score
-
         let mut ui = self.base.get_node_as::<UI>("UI");
         self.score += 1;
         ui.bind_mut().update_score(self.score);
+
+        let scores_required_to_increase_game_speed: [i32; 8] =
+            [100, 200, 300, 400, 500, 600, 700, 850];
+        // player's speed increased when they hit this score
 
         for i in scores_required_to_increase_game_speed
             .into_iter()
@@ -96,7 +96,7 @@ impl NodeVirtual for Main {
         self.floor_scene = load("res://Scenes/floor.tscn");
     }
 
-    fn physics_process(&mut self, _: f64) {
+    fn process(&mut self, _: f64) {
         match self.floor_to_lerp.as_mut() {
             // lerping new floors just for fun
             Some(floor) => {
