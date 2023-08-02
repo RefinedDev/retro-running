@@ -39,15 +39,13 @@ size = 25.0
 wait_time = 1.5
 autostart = true
 
-[node name="Floor" parent="." instance=ExtResource("2_4cofi")]
-
-[node name="UI" parent="." instance=ExtResource("3_iab1f")]
-offset_right = 125.0
-offset_bottom = 69.0
-
 [node name="Increment_score" type="Timer" parent="."]
 wait_time = 0.25
 autostart = true
+
+[node name="UI" parent="." instance=ExtResource("3_iab1f")]
+
+[node name="Floor" parent="." instance=ExtResource("2_4cofi")]
 
 [connection signal="timeout" from="Spawn_floor" to="." method="spawnfloor_timeout"]
 [connection signal="timeout" from="Increment_score" to="." method="increase_score"]
