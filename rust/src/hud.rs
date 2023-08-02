@@ -10,6 +10,7 @@ pub struct UI {
 
     fps_label: Option<Gd<Label>>,
     score_label: Option<Gd<Label>>,
+    main_menu: Option<Gd<Control>>,
 
     #[base]
     base: Base<Control>,
@@ -61,6 +62,7 @@ impl ControlVirtual for UI {
             paused: false,
             fps_label: None,
             score_label: None,
+            main_menu: None,
             base,
         }
     }
@@ -68,6 +70,7 @@ impl ControlVirtual for UI {
     fn ready(&mut self) {
         self.fps_label = Some(self.base.get_node_as::<Label>("FPS"));
         self.score_label = Some(self.base.get_node_as::<Label>("Score"));
+        self.main_menu = Some(self.base.get_node_as::<Control>("Main Menu"));
     }
     
     fn process(&mut self, _:f64) {
@@ -80,6 +83,13 @@ impl ControlVirtual for UI {
                 self.unpause();
             } else {
                 self.pause();
+            }
+        } else if input.is_action_just_pressed("mouse1".into()) {
+            let mm = self.main_menu.as_deref_mut().unwrap();
+            if mm.is_visible() {
+                mm.set_visible(false);
+                self.score_label.as_deref_mut().unwrap().set_visible(true);
+                self.unpause();
             }
         }
     }

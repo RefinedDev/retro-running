@@ -93,6 +93,11 @@ impl NodeVirtual for Main {
     }
 
     fn ready(&mut self) {
+        let mut scene_tree = self.base.get_tree();
+        let scene_tree = scene_tree.as_deref_mut().unwrap();
+
+        scene_tree.set_pause(true);
+
         self.floor_scene = load("res://Scenes/floor.tscn");
     }
 
