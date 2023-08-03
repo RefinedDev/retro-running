@@ -1,5 +1,5 @@
 use godot::{
-    engine::{notify::ControlNotification, Control, ControlVirtual, Label, Engine},
+    engine::{notify::ControlNotification, Control, ControlVirtual, Engine, Label},
     prelude::*,
 };
 
@@ -7,6 +7,7 @@ use godot::{
 #[class(base=Control)]
 pub struct UI {
     pub paused: bool,
+    in_menu: bool,
 
     fps_label: Option<Gd<Label>>,
     score_label: Option<Gd<Label>>,
@@ -24,7 +25,7 @@ impl UI {
     }
 
     pub fn pause(&mut self) {
-        if self.paused {
+        if self.paused || self.in_menu {
             return;
         }
 
@@ -53,6 +54,19 @@ impl UI {
         let mut st = self.base.get_tree();
         st.as_deref_mut().unwrap().quit();
     }
+
+    #[func]
+    fn play(&mut self) {
+        self.main_menu.as_deref_mut().unwrap().set_visible(false);
+        self.score_label.as_deref_mut().unwrap().set_visible(true);
+        self.unpause();
+        self.in_menu = false;
+    }
+
+    #[func]
+    fn settings(&mut self) {
+        godot_print!("TODO");
+    }
 }
 
 #[godot_api]
@@ -60,6 +74,7 @@ impl ControlVirtual for UI {
     fn init(base: Base<Control>) -> Self {
         UI {
             paused: false,
+            in_menu: true,
             fps_label: None,
             score_label: None,
             main_menu: None,
@@ -72,9 +87,12 @@ impl ControlVirtual for UI {
         self.score_label = Some(self.base.get_node_as::<Label>("Score"));
         self.main_menu = Some(self.base.get_node_as::<Control>("Main Menu"));
     }
-    
-    fn process(&mut self, _:f64) {
-        let fps = Engine::singleton().get_frames_per_second().to_string().into();
+
+    fn process(&mut self, _: f64) {
+        let fps = Engine::singleton()
+            .get_frames_per_second()
+            .to_string()
+            .into();
         self.fps_label.as_deref_mut().unwrap().set_text(fps);
 
         let input = Input::singleton();
@@ -84,21 +102,14 @@ impl ControlVirtual for UI {
             } else {
                 self.pause();
             }
-        } else if input.is_action_just_pressed("mouse1".into()) {
-            let mm = self.main_menu.as_deref_mut().unwrap();
-            if mm.is_visible() {
-                mm.set_visible(false);
-                self.score_label.as_deref_mut().unwrap().set_visible(true);
-                self.unpause();
-            }
         }
     }
 
     fn on_notification(&mut self, what: ControlNotification) {
         if Engine::singleton().is_editor_hint() {
-            return
+            return;
         }
-        
+
         if let ControlNotification::WmWindowFocusOut = what {
             self.pause(); // pause the game automatically if player goes out of game
         }

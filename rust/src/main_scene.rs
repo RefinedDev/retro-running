@@ -15,7 +15,7 @@ pub struct Main {
     floor_scene: Gd<PackedScene>,
     floor_count: f32,
     floor_to_lerp: Option<Gd<StaticBody3D>>,
-    
+
     #[base]
     base: Base<Node>,
 }
