@@ -17,6 +17,24 @@ pub struct Player {
 }
 
 impl Player {
+    // fn get_collided_objects(&mut self) -> Vec<Gd<Object>> {
+    //     let mut objects: Vec<Gd<Object>> = Vec::new();
+
+    //     let collision_count = self.base.get_slide_collision_count();
+    //     if collision_count > 0 {
+    //         for i in 0..collision_count {
+    //             let collision = self.base.get_slide_collision(i);
+    //             if let Some(collision) = collision {
+    //                 if let Some(object) = collision.get_collider() {
+    //                     objects.push(object);
+    //                 }
+    //             }
+    //         }
+    //     }
+
+    //     return objects;
+    // }
+
     pub fn change_direction(&mut self, direction: &str) {
         let center = Vector3::new(0.0, 0.0, 0.0);
         let right = Vector3::new(4.437, 0.0, 0.0);
@@ -52,6 +70,7 @@ impl CharacterBody3DVirtual for Player {
     }
 
     fn physics_process(&mut self, delta: f64) {
+        // mobility
         let mut velocity = self.base.get_velocity();
         let input = Input::singleton();
 
@@ -75,7 +94,7 @@ impl CharacterBody3DVirtual for Player {
             }
         }
 
-        // STRAFING CODE
+        // STRAFING
         if input.is_action_just_pressed("left".into()) {
             self.platform_standing = match self.platform_standing {
                 'C' => 'L',
@@ -99,9 +118,10 @@ impl CharacterBody3DVirtual for Player {
             _ => {}
         }
 
-        // GOING FORWARD
+        // FORWARD
         velocity.z = -1.0 * real::from_f64(self.speed);
 
+        // apply
         self.base.set_velocity(velocity);
         self.base.move_and_slide();
     }

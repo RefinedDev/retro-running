@@ -106,10 +106,6 @@ impl ControlVirtual for UI {
     }
 
     fn on_notification(&mut self, what: ControlNotification) {
-        if Engine::singleton().is_editor_hint() {
-            return;
-        }
-
         if let ControlNotification::WmWindowFocusOut = what {
             self.pause(); // pause the game automatically if player goes out of game
         }

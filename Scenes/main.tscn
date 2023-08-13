@@ -26,10 +26,10 @@ shadow_blur = 3.121
 environment = SubResource("Environment_s8deq")
 
 [node name="Player" parent="." instance=ExtResource("1_noseg")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 32)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.42372, 32)
 
 [node name="CameraPivot" type="Marker3D" parent="Player"]
-transform = Transform3D(1, 0, 0, 0, 0.906308, 0.422618, 0, -0.422618, 0.906308, 0, -2, -10)
+transform = Transform3D(1, 0, 0, 0, 0.951057, 0.309017, 0, -0.309017, 0.951057, 0, -2, -10)
 
 [node name="Camera3D" type="Camera3D" parent="Player/CameraPivot"]
 transform = Transform3D(1, 0, 0, 0, 1, -2.98023e-08, 0, 0, 1, 0, 4.76837e-07, 19)
@@ -47,5 +47,10 @@ autostart = true
 
 [node name="Floor" parent="." instance=ExtResource("2_4cofi")]
 
-[connection signal="timeout" from="Spawn_floor" to="." method="spawnfloor_timeout"]
+[node name="Spawn_portal" type="Timer" parent="."]
+wait_time = 60.0
+autostart = true
+
+[connection signal="timeout" from="Spawn_floor" to="." method="spawn_floor"]
 [connection signal="timeout" from="Increment_score" to="." method="increase_score"]
+[connection signal="timeout" from="Spawn_portal" to="." method="spawn_portal"]

@@ -1,20 +1,28 @@
 use crate::hud::UI;
 use crate::player::Player;
+use crate::portal::Portal;
+use crate::portal::Realm;
 
 use godot::{
-    engine::{StaticBody3D, Timer},
+    engine::{StaticBody3D, Timer, MeshInstance3D},
     prelude::*,
 };
+
+use rand::seq::SliceRandom;
 
 #[derive(GodotClass)]
 #[class(base=Node)]
 pub struct Main {
     score: i32,
-    player_intensity: i8, // how fast the player is running
+    game_intensity: i8, // how fast is game going
 
     floor_scene: Gd<PackedScene>,
+    portal_scene: Gd<PackedScene>,
+
+    current_realm: Realm,
+
     floor_count: f32,
-    floor_to_lerp: Option<Gd<StaticBody3D>>,
+    current_floor: Option<Gd<StaticBody3D>>,
 
     #[base]
     base: Base<Node>,
@@ -23,14 +31,30 @@ pub struct Main {
 #[godot_api]
 impl Main {
     #[func]
-    fn spawnfloor_timeout(&mut self) {
+    fn spawn_floor(&mut self) {
         let floor = self.floor_scene.instantiate_as::<StaticBody3D>();
         self.base.add_child(floor.share().upcast());
 
-        self.floor_to_lerp = Some(floor);
+        self.current_floor = Some(floor);
 
         self.floor_count += 1.0;
     }
+
+    #[func]
+    fn spawn_portal(&mut self) {
+        let directions: [&str; 3] = ["Left", "Right", "Center"];
+        let direction = directions.choose(&mut rand::thread_rng()).unwrap();
+
+        let mut portal_struct = self.portal_scene.instantiate_as::<Node3D>().cast::<Portal>();
+        portal_struct.bind_mut().setup(&self.current_realm); 
+
+        let portal = portal_struct.upcast::<Node3D>();
+
+        let current_floor = self.current_floor.as_deref().unwrap();
+        let mut direction_platform = current_floor.get_node_as::<MeshInstance3D>(direction);
+        
+        direction_platform.add_child(portal.share().upcast()); 
+    }   
 
     #[func]
     fn increase_score(&mut self) {
@@ -46,9 +70,9 @@ impl Main {
             .into_iter()
             .enumerate()
         {
-            if i.1 == self.score && self.player_intensity == i.0 as i8 {
+            if i.1 == self.score && self.game_intensity == i.0 as i8 {
                 // check if score equal and the intensity is also equal to the respective index
-                self.player_intensity += 1;
+                self.game_intensity += 1;
                 self.increase_speed();
             }
         }
@@ -83,11 +107,16 @@ impl NodeVirtual for Main {
     fn init(base: Base<Node>) -> Self {
         Main {
             score: 0,
-            player_intensity: 0,
+            game_intensity: 0,
 
             floor_scene: PackedScene::new(),
+            portal_scene: PackedScene::new(),
+
+            current_realm: Realm::OVERWORLD,
+
             floor_count: 0.0,
-            floor_to_lerp: None,
+            current_floor: None,
+
             base,
         }
     }
@@ -99,10 +128,11 @@ impl NodeVirtual for Main {
         scene_tree.set_pause(true);
 
         self.floor_scene = load("res://Scenes/floor.tscn");
+        self.portal_scene = load("res://Scenes//portal.tscn")
     }
 
     fn process(&mut self, _: f64) {
-        match self.floor_to_lerp.as_mut() {
+        match self.current_floor.as_mut() {
             // lerping new floors just for fun
             Some(floor) => {
                 let current_pos = floor.get_position();
@@ -110,7 +140,7 @@ impl NodeVirtual for Main {
                 floor.set_position(Vector3::lerp(current_pos, target_pos, 0.3));
 
                 if floor.get_position() == target_pos {
-                    self.floor_to_lerp = None
+                    self.current_floor = None
                 }
             }
             None => {}
