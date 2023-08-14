@@ -4,11 +4,38 @@ use crate::portal::Portal;
 use crate::portal::Realm;
 
 use godot::{
-    engine::{StaticBody3D, Timer, MeshInstance3D},
+    engine::{MeshInstance3D, StaticBody3D, Timer},
     prelude::*,
 };
 
-use rand::seq::SliceRandom;
+use rand::distributions::Standard;
+use rand::prelude::Distribution;
+
+pub enum PlatformDirection {
+    Left,
+    Right,
+    Center,
+}
+
+impl ToString for PlatformDirection {
+    fn to_string(&self) -> String {
+        match self {
+            PlatformDirection::Left => "Left".to_string(),
+            PlatformDirection::Right => "Right".to_string(),
+            PlatformDirection::Center => "Center".to_string(),
+        }
+    }
+}
+impl Distribution<PlatformDirection> for Standard {
+    fn sample<R: rand::Rng + ?Sized>(&self, rng: &mut R) -> PlatformDirection {
+        match rng.gen_range(0..=2) {
+            0 => PlatformDirection::Left,
+            1 => PlatformDirection::Center,
+            2 => PlatformDirection::Right,
+            _ => PlatformDirection::Center,
+        }
+    }
+}
 
 #[derive(GodotClass)]
 #[class(base=Node)]
@@ -42,19 +69,22 @@ impl Main {
 
     #[func]
     fn spawn_portal(&mut self) {
-        let directions: [&str; 3] = ["Left", "Right", "Center"];
-        let direction = directions.choose(&mut rand::thread_rng()).unwrap();
+        let direction: PlatformDirection = rand::random();
 
-        let mut portal_struct = self.portal_scene.instantiate_as::<Node3D>().cast::<Portal>();
-        portal_struct.bind_mut().setup(&self.current_realm); 
+        let mut portal_struct = self
+            .portal_scene
+            .instantiate_as::<Node3D>()
+            .cast::<Portal>();
+        portal_struct.bind_mut().setup(&self.current_realm);
 
         let portal = portal_struct.upcast::<Node3D>();
 
         let current_floor = self.current_floor.as_deref().unwrap();
-        let mut direction_platform = current_floor.get_node_as::<MeshInstance3D>(direction);
-        
-        direction_platform.add_child(portal.share().upcast()); 
-    }   
+        let mut direction_platform =
+            current_floor.get_node_as::<MeshInstance3D>(direction.to_string());
+
+        direction_platform.add_child(portal.share().upcast());
+    }
 
     #[func]
     fn increase_score(&mut self) {

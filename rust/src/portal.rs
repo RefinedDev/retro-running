@@ -32,7 +32,7 @@ impl Realm {
             Self::OVERWORLD => (77, 140, 87),
             Self::EIGHTBIT => (255, 105, 180),
             Self::NETHER => (139, 0, 0),
-            Self::INVERTED => (255, 255, 255),
+            Self::INVERTED => (104, 51, 255),
         }
     }
 }
@@ -42,7 +42,7 @@ impl Realm {
 #[class(base=Node3D)]
 pub struct Portal {
     portal_realm: Realm,
-    
+
     #[base]
     base: Base<Node3D>,
 }
@@ -52,7 +52,7 @@ impl Portal {
     pub fn setup(&mut self, current_realm: &Realm) {
         let mut random_realm: Realm = rand::random();
 
-        while &random_realm == current_realm { 
+        while &random_realm == current_realm {
             // we dont want to have the portal of the same realm (eg. overworld portal in overworld realm)
             random_realm = rand::random();
         }
@@ -63,7 +63,7 @@ impl Portal {
 
     fn change_texture(&mut self) {
         let mut portal = self.base.get_node_as::<MeshInstance3D>("portal");
-        
+
         let rgba = self.portal_realm.get_colour();
         let colour = Color::from_rgba8(rgba.0, rgba.1, rgba.2, 255);
 
@@ -88,7 +88,7 @@ impl StaticBody3DVirtual for Portal {
     fn init(base: Base<Node3D>) -> Self {
         Portal {
             portal_realm: Realm::OVERWORLD,
-    
+
             base,
         }
     }

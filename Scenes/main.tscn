@@ -48,7 +48,7 @@ autostart = true
 [node name="Floor" parent="." instance=ExtResource("2_4cofi")]
 
 [node name="Spawn_portal" type="Timer" parent="."]
-wait_time = 60.0
+wait_time = 5.0
 autostart = true
 
 [connection signal="timeout" from="Spawn_floor" to="." method="spawn_floor"]

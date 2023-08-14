@@ -1,51 +1,35 @@
-[gd_scene load_steps=7 format=3 uid="uid://c40bg8vkftgna"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_m72mg"]
-albedo_color = Color(0, 0, 0, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_rk52b"]
-material = SubResource("StandardMaterial3D_m72mg")
-size = Vector3(4, 0.5, 0.5)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rxvft"]
-albedo_color = Color(0, 0, 0, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_lqnp6"]
-material = SubResource("StandardMaterial3D_rxvft")
-size = Vector3(10, 0.5, 0.5)
+[gd_scene load_steps=5 format=3 uid="uid://c40bg8vkftgna"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_6faa7"]
-size = Vector3(4, 6, 0.5)
+size = Vector3(3.5, 7, 0.5)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_g57q7"]
-size = Vector3(4, 9, 0.5)
+size = Vector3(4, 5.96363, 0.5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xef31"]
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+emission_energy_multiplier = 16.0
+
+[sub_resource type="PrismMesh" id="PrismMesh_0g5y2"]
+material = SubResource("StandardMaterial3D_xef31")
+size = Vector3(4, 3, 8)
 
 [node name="Portal" type="Portal"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.930029, 0)
 
-[node name="border" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.52192, 0)
-mesh = SubResource("BoxMesh_rk52b")
-skeleton = NodePath("../..")
-
-[node name="border3" type="MeshInstance3D" parent="."]
-transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, -2.24707, 0.762545, 0)
-mesh = SubResource("BoxMesh_lqnp6")
-skeleton = NodePath("../..")
-
-[node name="border4" type="MeshInstance3D" parent="."]
-transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 2.2542, 0.762545, 0)
-mesh = SubResource("BoxMesh_lqnp6")
-skeleton = NodePath("../..")
-
 [node name="portal" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.29934, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.29934, 0.384958)
 mesh = SubResource("BoxMesh_6faa7")
 
 [node name="Area3D" type="Area3D" parent="."]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.32188, 0)
 shape = SubResource("BoxShape3D_g57q7")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 2, -1.28563)
+mesh = SubResource("PrismMesh_0g5y2")
 
 [connection signal="body_entered" from="Area3D" to="." method="body_entered"]

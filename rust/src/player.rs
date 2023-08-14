@@ -3,6 +3,8 @@ use godot::{
     prelude::*,
 };
 
+use crate::main_scene::PlatformDirection;
+
 #[derive(GodotClass)]
 #[class(base=CharacterBody3D)]
 pub struct Player {
@@ -10,7 +12,7 @@ pub struct Player {
     jump_power: f64,
     gravity: f64,
 
-    platform_standing: char,
+    platform_standing: PlatformDirection,
 
     #[base]
     base: Base<CharacterBody3D>,
@@ -35,15 +37,11 @@ impl Player {
     //     return objects;
     // }
 
-    pub fn change_direction(&mut self, direction: &str) {
-        let center = Vector3::new(0.0, 0.0, 0.0);
-        let right = Vector3::new(4.437, 0.0, 0.0);
-        let left = Vector3::new(-4.432, 0.0, 0.0);
-        let pos = match direction {
-            "Center" => center,
-            "Right" => right,
-            "Left" => left,
-            _ => center,
+    pub fn change_direction(&mut self) {
+        let pos = match self.platform_standing {
+            PlatformDirection::Center => Vector3::new(0.0, 0.0, 0.0),
+            PlatformDirection::Right => Vector3::new(4.437, 0.0, 0.0),
+            PlatformDirection::Left => Vector3::new(-4.432, 0.0, 0.0),
         };
 
         let x = pos.x;
@@ -64,7 +62,7 @@ impl CharacterBody3DVirtual for Player {
             jump_power: 10.0,
             gravity: 30.0,
 
-            platform_standing: 'C', // 'C' = Center, 'L' = Left, 'R' = Right
+            platform_standing: PlatformDirection::Center,
             base,
         }
     }
@@ -97,25 +95,18 @@ impl CharacterBody3DVirtual for Player {
         // STRAFING
         if input.is_action_just_pressed("left".into()) {
             self.platform_standing = match self.platform_standing {
-                'C' => 'L',
-                'R' => 'C',
-                _ => 'L',
+                PlatformDirection::Center => PlatformDirection::Left,
+                PlatformDirection::Right => PlatformDirection::Center,
+                PlatformDirection::Left => PlatformDirection::Left,
             };
         }
 
         if input.is_action_just_pressed("right".into()) {
             self.platform_standing = match self.platform_standing {
-                'C' => 'R',
-                'L' => 'C',
-                _ => 'R',
+                PlatformDirection::Center => PlatformDirection::Right,
+                PlatformDirection::Left => PlatformDirection::Center,
+                PlatformDirection::Right => PlatformDirection::Right,
             };
-        }
-
-        match self.platform_standing {
-            'C' => self.change_direction("Center"),
-            'R' => self.change_direction("Right"),
-            'L' => self.change_direction("Left"),
-            _ => {}
         }
 
         // FORWARD
@@ -124,5 +115,6 @@ impl CharacterBody3DVirtual for Player {
         // apply
         self.base.set_velocity(velocity);
         self.base.move_and_slide();
+        self.change_direction();
     }
 }
