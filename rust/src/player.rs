@@ -1,5 +1,5 @@
 use godot::{
-    engine::{CharacterBody3D, CharacterBody3DVirtual},
+    engine::{CharacterBody3D, CharacterBody3DVirtual, Control},
     prelude::*,
 };
 
@@ -11,6 +11,9 @@ pub struct Player {
     pub speed: f64,
     jump_power: f64,
     gravity: f64,
+    
+    #[export]
+    dead: bool,
 
     platform_standing: PlatformDirection,
 
@@ -18,6 +21,7 @@ pub struct Player {
     base: Base<CharacterBody3D>,
 }
 
+#[godot_api]
 impl Player {
     // fn get_collided_objects(&mut self) -> Vec<Gd<Object>> {
     //     let mut objects: Vec<Gd<Object>> = Vec::new();
@@ -37,7 +41,7 @@ impl Player {
     //     return objects;
     // }
 
-    pub fn change_direction(&mut self) {
+    fn change_direction(&mut self) {
         let pos = match self.platform_standing {
             PlatformDirection::Center => Vector3::new(0.0, 0.0, 0.0),
             PlatformDirection::Right => Vector3::new(4.437, 0.0, 0.0),
@@ -52,6 +56,19 @@ impl Player {
         self.base
             .set_position(Vector3::lerp(current_pos, Vector3::new(x, y, z), 0.3));
     }
+
+    fn death_check(&mut self) {
+        if self.dead {
+            let mut scene_tree = self.base.get_tree();
+            scene_tree.as_deref_mut().unwrap().set_pause(true);
+
+            let parent = self.base.get_parent();
+            let ui = parent.as_deref().unwrap().get_node_as::<Control>("UI");
+            let mut dead_menu = ui.get_node_as::<Control>("Death");
+
+            dead_menu.set_visible(true);
+        }
+    }
 }
 
 #[godot_api]
@@ -61,6 +78,7 @@ impl CharacterBody3DVirtual for Player {
             speed: 20.0,
             jump_power: 10.0,
             gravity: 30.0,
+            dead: false,
 
             platform_standing: PlatformDirection::Center,
             base,
@@ -68,6 +86,8 @@ impl CharacterBody3DVirtual for Player {
     }
 
     fn physics_process(&mut self, delta: f64) {
+        self.death_check();
+
         // mobility
         let mut velocity = self.base.get_velocity();
         let input = Input::singleton();

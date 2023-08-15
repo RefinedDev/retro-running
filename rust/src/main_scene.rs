@@ -142,7 +142,7 @@ impl NodeVirtual for Main {
             floor_scene: PackedScene::new(),
             portal_scene: PackedScene::new(),
 
-            current_realm: Realm::OVERWORLD,
+            current_realm: Realm::Overworld,
 
             floor_count: 0.0,
             current_floor: None,

@@ -8,20 +8,20 @@ use rand::{distributions::Standard, prelude::Distribution};
 // REALM ENUM AND IMPLEMENTATIONS
 #[derive(PartialEq, Eq)]
 pub enum Realm {
-    OVERWORLD,
-    NETHER,
-    EIGHTBIT,
-    INVERTED,
+    Overworld,
+    Nether,
+    EightBit,
+    Inverted,
 }
 
 impl Distribution<Realm> for Standard {
     fn sample<R: rand::Rng + ?Sized>(&self, rng: &mut R) -> Realm {
         match rng.gen_range(0..=3) {
-            0 => Realm::OVERWORLD,
-            1 => Realm::NETHER,
-            2 => Realm::EIGHTBIT,
-            3 => Realm::INVERTED,
-            _ => Realm::OVERWORLD,
+            0 => Realm::Overworld,
+            1 => Realm::Nether,
+            2 => Realm::EightBit,
+            3 => Realm::Inverted,
+            _ => Realm::Overworld,
         }
     }
 }
@@ -29,10 +29,10 @@ impl Distribution<Realm> for Standard {
 impl Realm {
     fn get_colour(&self) -> (u8, u8, u8) {
         match self {
-            Self::OVERWORLD => (77, 140, 87),
-            Self::EIGHTBIT => (255, 105, 180),
-            Self::NETHER => (139, 0, 0),
-            Self::INVERTED => (104, 51, 255),
+            Self::Overworld => (77, 140, 87),
+            Self::EightBit => (255, 105, 180),
+            Self::Nether => (139, 0, 0),
+            Self::Inverted => (104, 51, 255),
         }
     }
 }
@@ -87,7 +87,7 @@ impl Portal {
 impl StaticBody3DVirtual for Portal {
     fn init(base: Base<Node3D>) -> Self {
         Portal {
-            portal_realm: Realm::OVERWORLD,
+            portal_realm: Realm::Overworld,
 
             base,
         }

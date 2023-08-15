@@ -161,7 +161,70 @@ grow_vertical = 2
 theme_override_font_sizes/font_size = 30
 text = "SETTINGS"
 
+[node name="Death" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="you ded" type="Label" parent="Death"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -141.0
+offset_top = -200.0
+offset_right = 142.0
+offset_bottom = -114.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 60
+text = "YOU DIED
+"
+
+[node name="restart" type="Button" parent="Death"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -117.5
+offset_top = -34.5
+offset_right = 117.5
+offset_bottom = 34.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 44
+text = "RESTART
+"
+
+[node name="Exit" type="Button" parent="Death"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -117.0
+offset_top = 52.0
+offset_right = 118.0
+offset_bottom = 115.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 40
+text = "nah im done"
+
 [connection signal="pressed" from="Pause Menu/Continue" to="." method="unpause"]
 [connection signal="pressed" from="Pause Menu/Exit" to="." method="exit_game"]
 [connection signal="pressed" from="Main Menu/play" to="." method="play"]
 [connection signal="pressed" from="Main Menu/settings" to="." method="settings"]
+[connection signal="pressed" from="Death/restart" to="." method="restart_game"]
+[connection signal="pressed" from="Death/Exit" to="." method="exit_game"]

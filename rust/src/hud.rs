@@ -67,6 +67,14 @@ impl UI {
     fn settings(&mut self) {
         godot_print!("TODO");
     }
+
+    #[func]
+    fn restart_game(&mut self) {
+        let mut scene_tree = self.base.get_tree();
+        let scene_tree = scene_tree.as_deref_mut().unwrap();
+
+        scene_tree.reload_current_scene();
+    }
 }
 
 #[godot_api]
